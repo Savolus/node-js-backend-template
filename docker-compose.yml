@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  server:
+    build: .
+    command: npm run start:$NODE_ENV
+    restart: unless-stopped
+    environment:
+      NODE_ENV: $NODE_ENV
+      PORT: $PORT
+      DB_URI: $DB_URI
+      SALT: $SALT
+      JWT_SECRET: $JWT_SECRET
+      JWT_ACCESS_TOKEN_EXPIRES_IN: $JWT_ACCESS_TOKEN_EXPIRES_IN
+      JWT_REFRESH_TOKEN_EXPIRES_IN: $JWT_REFRESH_TOKEN_EXPIRES_IN
+    volumes:
+      - ./src:/usr/app/src
+    ports:
+      - $PORT:$PORT
+    depends_on:
+      - db
+  db:
+    image: arm64v8/mongo
+    environment:
+      DB_PORT: $DB_PORT
+    volumes:
+      - ./data:/data/db
+    ports:
+      - $DB_PORT:$DB_PORT
